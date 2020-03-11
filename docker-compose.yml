@@ -1,0 +1,18 @@
+version: '3.6'
+services:
+
+  data:
+    image: mongo
+
+  myretail:
+    build: .
+    links:
+      - data
+    environment:
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+      FLASK_APP: /myretail-api/myretail/app.py
+      FLASK_ENV: development
+    ports:
+      - "5000:5000"
+    command: "python -u /myretail-api/myretail/app.py"
