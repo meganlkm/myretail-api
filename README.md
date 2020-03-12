@@ -34,7 +34,7 @@ http localhost:5000/products/<id>
 Create new products.
 
 ```bash
-http POST localhost:5000/products < product.json
+http POST localhost:5000/products < tests/product.json
 http POST localhost:5000/products name='my movie 5' current_price='{"value": 12.99}'
 ```
 
@@ -74,3 +74,9 @@ Run the tests
 ```bash
 resttest.py http://localhost:5000 tests/rest-test.yml
 ```
+
+## Clean up
+
+- `CTRL+C` to exit the api container
+- Run `docker-compose down`
+- If you created a local virtualenv run `deactivate && rm -rf .venv`
