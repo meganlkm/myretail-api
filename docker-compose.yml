@@ -16,3 +16,7 @@ services:
     ports:
       - "5000:5000"
     command: "python -u /myretail-api/myretail/app.py"
+    volumes:
+      - type: bind
+        source: ./
+        target: /myretail-api

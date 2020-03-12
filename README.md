@@ -13,6 +13,10 @@ make up
 `curl` works but I like to use `httpie`
 
 ```bash
+# start a virtualenv first
+virtualenv -p /path/to/python3 .venv
+source .venv/bin/activate
+# install the library
 pip install httpie
 ```
 
@@ -48,4 +52,25 @@ Delete an existing product.
 
 ```bash
 http DELETE localhost:5000/products/<id>
+```
+
+### PyRestTest
+
+Set up a virtualenv
+
+```bash
+virtualenv -p /path/to/python3 .venv
+source .venv/bin/activate
+```
+
+Install test requirements
+
+```bash
+pip install -r requirements-test.txt
+```
+
+Run the tests
+
+```bash
+resttest.py http://localhost:5000 tests/rest-test.yml
 ```

@@ -1,0 +1,47 @@
+---
+- config:
+  - testset: rest api tests
+
+- test:
+  - name: Basic smoketest
+  - url: /products
+  - expected_status: [200]
+
+- test:
+  - name: Create a new product
+  - url: /products
+  - method: POST
+  - body: '{"name": "Test Product", "current_price": {"value": 12.99}}'
+  - headers: {Content-Type: application/json}
+  - expected_status: [201]
+  - extract_binds:
+    - product_id: {jsonpath_mini: id}
+
+- test:
+  - name: Verify the new product exists
+  - url: {template: /products/$product_id}
+  - expected_status: [200]
+  - validators:
+    - compare: {jsonpath_mini: name, comparator: str_eq, expected: Test Product}
+    - compare: {jsonpath_mini: current_price.value, comparator: eq, expected: 12.99}
+
+- test:
+  - name: Update the test product
+  - url: {template: /products/$product_id}
+  - method: PUT
+  - headers: {Content-Type: application/json}
+  - body: '{"name": "Updated Test Product"}'
+  - expected_status: [200]
+
+- test:
+  - name: Verify the updated product
+  - url: {template: /products/$product_id}
+  - expected_status: [200]
+  - validators:
+    - compare: {jsonpath_mini: name, comparator: str_eq, expected: Updated Test Product}
+
+- test:
+  - name: Delete the test product
+  - url: {template: /products/$product_id}
+  - method: DELETE
+  - expected_status: [204]

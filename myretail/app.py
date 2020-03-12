@@ -23,8 +23,15 @@ def get_products():
 
 @app.route('/products/<id>')
 def get_product(id):
-    products = Product.objects.get(id=id).to_json()
-    return Response(products, mimetype="application/json", status=200)
+    try:
+        products = Product.objects.get(id=id).to_json()
+        return Response(products, mimetype="application/json", status=200)
+    except:
+        return Response(
+            {"ERROR": "Product not found"},
+            mimetype="application/json",
+            status=404
+        )
 
 
 @app.route('/products', methods=['POST'])
@@ -34,18 +41,21 @@ def add_product():
     # current_price is required
     if 'current_price' not in body:
         return {"ERROR": "Missing current_price"}, 500
+
     # take the price attribute out of the request to
     # create the Price object and embed it into the Product object
     price = body.pop('current_price')
+
     # if it's a string convert it to json
     if not isinstance(price, Mapping):
         print("Loading JSON from string")
         price = json.loads(price)
+
     current_price = Price(**price)
 
     product = Product(current_price=current_price, **body).save()
     id = product.id
-    return {'id': str(id)}, 200
+    return {'id': str(id)}, 201
 
 
 @app.route('/products/<id>', methods=['PUT'])
@@ -55,13 +65,14 @@ def update_product(id):
         Product.objects.get(id=id).update(**body)
         return '', 200
     except Exception as e:
+        # return a better error message
         return {"ERROR": str(e)}, 500
 
 
 @app.route('/products/<id>', methods=['DELETE'])
 def delete_product(id):
     Product.objects.get(id=id).delete()
-    return '', 200
+    return '', 204
 
 
 if __name__ == "__main__":
