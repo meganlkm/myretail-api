@@ -3,6 +3,7 @@
 ## Build
 
 ```bash
+# This will build the images and run them
 make up
 ```
 
